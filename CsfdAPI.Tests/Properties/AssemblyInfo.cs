@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("CsfdAPI")]
+[assembly: AssemblyTitle("CsfdAPI.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CsfdAPI")]
+[assembly: AssemblyProduct("CsfdAPI.Tests")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
-[assembly: Guid("3fb4cb06-b8b0-4411-a0d9-383ae8831615")]
+[assembly: Guid("2863cd27-67e1-4c35-8a39-f76e52fa8643")]
 
 // Version information for an assembly consists of the following four values:
 //
