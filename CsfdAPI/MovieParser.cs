@@ -123,12 +123,24 @@ namespace CsfdAPI
         /// <summary>
         ///     Get movie rating %
         /// </summary>
-        /// <param name="doc">HtmlDocument</param>
+        /// <param name="document">HtmlDocument</param>
         /// <returns>Rating</returns>
-        private string GetRating(HtmlDocument doc)
+        private int GetRating(HtmlDocument document)
         {
-            var node = doc.DocumentNode.SelectNodes("//h2[@class='average']");
-            return node[0].InnerText.Trim();
+            int rating;
+
+            var node = document.DocumentNode.SelectSingleNode("//h2[@class='average']");
+
+            try
+            {
+                rating = int.Parse(Regex.Match(node.InnerText, @"\d*").Value);
+            }
+            catch
+            {
+                rating = -1;
+            }
+
+            return rating;
         }
 
         /// <summary>
@@ -140,7 +152,7 @@ namespace CsfdAPI
         {
             var node = doc.DocumentNode.SelectNodes("//div[@id='plots']//ul/li");
 
-            if ((node != null) && (node[0] != null))
+            if (node?[0] != null)
             {
                 return node[0].InnerText.Trim();
             }

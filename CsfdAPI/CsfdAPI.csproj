@@ -44,9 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Cinema.cs" />
     <Compile Include="CsfdApi.cs" />
     <Compile Include="HtmlLoader.cs" />
+    <Compile Include="Model\CinemaMovie.cs" />
     <Compile Include="Model\Movie.cs" />
+    <Compile Include="CinemaProgramParser.cs" />
     <Compile Include="MovieParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

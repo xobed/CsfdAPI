@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
+using CsfdAPI.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CsfdAPI.Tests
@@ -19,9 +19,8 @@ namespace CsfdAPI.Tests
             const string expectedTitle = "Predátor / Predator";
             Assert.AreEqual(expectedTitle, mov.Title);
 
-            // Rating should be NN%
-            var searchPattern = new Regex("\\d{1,2}%", RegexOptions.IgnoreCase);
-            Assert.IsTrue(searchPattern.IsMatch(mov.Rating));
+            // Rating should be 0-100
+            Assert.IsTrue((mov.Rating >= 0) && (mov.Rating <= 100));
 
             // Check genres
             var expectedGenres = new List<string> {"Sci-Fi", "Akční", "Dobrodružný", "Thriller"};
@@ -55,6 +54,33 @@ namespace CsfdAPI.Tests
         {
             var result = csfdApi.SearchMovie("Afflicted (2013)");
             Assert.AreEqual(result.Url, "http://www.csfd.cz/film/351411-v-bolestech/");
+        }
+
+        private void AssertListingIsCorrect(Cinema cinema)
+        {
+            Assert.IsFalse(string.IsNullOrEmpty(cinema.CinemaName));
+            foreach (var cinemaMovie in cinema.Movies)
+            {
+                Assert.IsTrue(cinemaMovie.Url.Contains("csfd.cz/film"));
+                Assert.IsFalse(string.IsNullOrEmpty(cinemaMovie.MovieName));
+                Assert.IsTrue(cinemaMovie.Times.Any());
+            }
+        }
+
+        [TestMethod]
+        public void GetAllCinemaListingsTest()
+        {
+            var result = csfdApi.GetAllCinemaListings().ToList();
+            Assert.IsTrue(result.Count > 0);
+            result.ForEach(AssertListingIsCorrect);
+        }
+
+        [TestMethod]
+        public void GetCinemaListingTest()
+        {
+            var result = csfdApi.GetCinemaListing("http://www.csfd.cz/kino/?district-filter=55").ToList();
+            Assert.IsTrue(result.Count > 0);
+            result.ForEach(AssertListingIsCorrect);
         }
     }
 }
