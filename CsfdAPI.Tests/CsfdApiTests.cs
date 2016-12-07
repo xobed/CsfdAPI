@@ -33,6 +33,21 @@ namespace CsfdAPI.Tests
         }
 
         [TestMethod]
+        public void GetMovie_GetsMovieWithoutGenres()
+        {
+            var mov = csfdApi.GetMovie("http://csfd.cz/film/37558-hedy/");
+
+            // Check title
+            const string expectedTitle = "Hedy";
+            Assert.AreEqual(expectedTitle, mov.Title);
+
+            Assert.IsTrue(!mov.Genres.Any(), "Expected no genres for this movie");
+
+            Assert.AreEqual("1966", mov.Year);
+            Assert.IsFalse(string.IsNullOrEmpty(mov.PosterUrl));
+        }
+
+        [TestMethod]
         public void GetMovie_NoPlot()
         {
             // This movie has no plot

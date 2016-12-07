@@ -100,6 +100,10 @@ namespace CsfdAPI
         private List<string> GetGenres(HtmlDocument doc)
         {
             var node = doc.DocumentNode.SelectNodes("//*[@id='profile']//p[@class='genre']");
+            if (node == null)
+            {
+                return new List<string>();
+            }
             var genres = node[0].InnerText.Trim();
             return genres.Split('/').Select(g => g.Trim()).ToList();
         }
