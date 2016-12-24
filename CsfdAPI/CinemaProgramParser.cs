@@ -28,6 +28,11 @@ namespace CsfdAPI
 
             var cinemaElements = GetCinemaElements(document);
 
+            if (cinemaElements == null)
+            {
+                return new List<Cinema>();
+            }
+
             var cinemaListing = new List<Cinema>();
 
             foreach (var cinema in cinemaElements)

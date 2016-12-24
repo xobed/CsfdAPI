@@ -93,7 +93,7 @@ namespace CsfdAPI.Tests
         [TestMethod]
         public void GetCinemaListingTest()
         {
-            var result = csfdApi.GetCinemaListing("http://www.csfd.cz/kino/?district-filter=55").ToList();
+            var result = csfdApi.GetCinemaListing("http://www.csfd.cz/kino/filtr-1/").ToList();
             Assert.IsTrue(result.Count > 0);
             result.ForEach(AssertListingIsCorrect);
         }
