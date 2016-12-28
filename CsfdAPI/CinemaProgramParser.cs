@@ -22,6 +22,19 @@ namespace CsfdAPI
             return allCinemaList;
         }
 
+        // Todo - fix datetime
+        internal IEnumerable<Cinema> GetAllCinemaListingsTomorrow()
+        {
+            var allCinemaList = new List<Cinema>();
+
+            // CZ
+            allCinemaList.AddRange(GetCinemaListing("http://www.csfd.cz/kino/filtr-1/?period=tomorrow&district-filter=0"));
+            // SK
+            allCinemaList.AddRange(GetCinemaListing("http://www.csfd.cz/kino/filtr-2/?period=tomorrow&district-filter=0"));
+
+            return allCinemaList;
+        }
+
         internal List<Cinema> GetCinemaListing(string url)
         {
             var document = htmlLoader.GetDocumentByUrl(url);
@@ -51,7 +64,7 @@ namespace CsfdAPI
             }
 
             return cinemaListing;
-        }
+        }             
 
         private HtmlNodeCollection GetCinemaElements(HtmlDocument doc)
         {
