@@ -10,7 +10,7 @@ namespace CsfdAPI
     {
         private readonly HtmlLoader htmlLoader = new HtmlLoader();
 
-        internal IEnumerable<Cinema> GetAllCinemas()
+        internal IEnumerable<Cinema> GetAllCinemaListingsToday()
         {
             var allCinemaList = new List<Cinema>();
 

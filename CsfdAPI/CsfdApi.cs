@@ -18,9 +18,9 @@ namespace CsfdAPI
             return movieParser.SearchAndGetMovie(query);
         }
 
-        public IEnumerable<Cinema> GetAllCinemaListings()
+        public IEnumerable<Cinema> GetAllCinemaListingsToday()
         {
-            return cinemaProgramParser.GetAllCinemas();
+            return cinemaProgramParser.GetAllCinemaListingsToday();
         }
 
         // Url example 

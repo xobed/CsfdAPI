@@ -83,15 +83,15 @@ namespace CsfdAPI.Tests
         }
 
         [TestMethod]
-        public void GetAllCinemaListingsTest()
+        public void GetAllCinemaListingsTodayTest()
         {
-            var result = csfdApi.GetAllCinemaListings().ToList();
+            var result = csfdApi.GetAllCinemaListingsToday().ToList();
             Assert.IsTrue(result.Count > 0);
             result.ForEach(AssertListingIsCorrect);
         }
 
         [TestMethod]
-        public void GetCinemaListingTest()
+        public void GetCinemaListingTodayTest()
         {
             var result = csfdApi.GetCinemaListing("http://www.csfd.cz/kino/filtr-1/").ToList();
             Assert.IsTrue(result.Count > 0);
