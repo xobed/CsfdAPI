@@ -28,6 +28,11 @@ namespace CsfdAPI
             return cinemaProgramParser.GetAllCinemaListingsTomorrow();
         }
 
+        public IEnumerable<Cinema> GetAllCinemaListings()
+        {
+            return cinemaProgramParser.GetAllCinemaListings();
+        }
+
         // Url example 
         // http://www.csfd.cz/kino/?district-filter=55
         public IEnumerable<Cinema> GetCinemaListing(string url)

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using CsfdAPI.Model;
 using HtmlAgilityPack;
 
@@ -34,6 +36,18 @@ namespace CsfdAPI
 
             return allCinemaList;
         }
+        
+        internal IEnumerable<Cinema> GetAllCinemaListings()
+        {
+            var allCinemaList = new List<Cinema>();
+
+            // CZ
+            allCinemaList.AddRange(GetCinemaListing("http://www.csfd.cz/kino/filtr-1/?period=all&district-filter=0"));
+            // SK
+            allCinemaList.AddRange(GetCinemaListing("http://www.csfd.cz/kino/filtr-2/?period=all&district-filter=0"));
+
+            return allCinemaList;
+        }
 
         internal List<Cinema> GetCinemaListing(string url)
         {
@@ -53,8 +67,16 @@ namespace CsfdAPI
                 var titleNode = cinema.SelectSingleNode("div/h2");
                 var title = titleNode.InnerText;
 
-                var movieNodes = GetMovieElements(cinema);
-                var movieList = movieNodes.Select(GetMovie).ToList();
+                var dateTableElements = cinema.SelectNodes("div[@class='content']/table");
+                var movieList = new List<CinemaMovie>();
+                foreach (var tableElement in dateTableElements)
+                {
+                    var dateNode = tableElement.SelectSingleNode("caption");
+                    var date = GetDateFromDateNode(dateNode);
+
+                    var movieNodes = GetMovieElements(tableElement);
+                    movieList.AddRange(movieNodes.Select(n => GetMovie(n, date)));
+                }
 
                 cinemaListing.Add(new Cinema
                 {
@@ -64,7 +86,14 @@ namespace CsfdAPI
             }
 
             return cinemaListing;
-        }             
+        }
+
+        private DateTime GetDateFromDateNode(HtmlNode dateNode)
+        {
+            string dateString = Regex.Match(dateNode.InnerHtml, @"\d{1,2}\.\d{1,2}\.\d{4}").Value;
+            string format = "d.M.yyyy";
+            return DateTime.ParseExact(dateString, format, CultureInfo.InvariantCulture);
+        }
 
         private HtmlNodeCollection GetCinemaElements(HtmlDocument doc)
         {
@@ -74,11 +103,11 @@ namespace CsfdAPI
 
         private HtmlNodeCollection GetMovieElements(HtmlNode cinemaNode)
         {
-            var result = cinemaNode.SelectNodes("div/table/tr");
+            var result = cinemaNode.SelectNodes("tr");
             return result;
         }
 
-        private CinemaMovie GetMovie(HtmlNode movieNode)
+        private CinemaMovie GetMovie(HtmlNode movieNode, DateTime date)
         {
             var titleNode = movieNode.SelectSingleNode("th/a");
 
@@ -89,7 +118,7 @@ namespace CsfdAPI
 
             var timeNodes = movieNode.SelectNodes("td[not(@class)]");
 
-            var timeList = GetTimeList(timeNodes);
+            var timeList = GetTimeList(timeNodes, date);
 
             var flags = GetFlags(movieNode);
 
@@ -102,10 +131,10 @@ namespace CsfdAPI
             };
         }
 
-        private List<DateTime> GetTimeList(HtmlNodeCollection timeNodes)
+        private List<DateTime> GetTimeList(HtmlNodeCollection timeNodes, DateTime date)
         {
             var timesAsString = from timeNode in timeNodes where !string.IsNullOrEmpty(timeNode.InnerText) select timeNode.InnerText;
-            return timesAsString.Select(t => GetDateTimeFromString(DateTime.Today, t)).ToList();
+            return timesAsString.Select(t => GetDateTimeFromString(date, t)).ToList();
         }
 
         private DateTime GetDateTimeFromString(DateTime date, string timeString)
