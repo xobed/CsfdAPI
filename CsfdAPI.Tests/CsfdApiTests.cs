@@ -8,12 +8,12 @@ namespace CsfdAPI.Tests
     [TestClass]
     public class CsfdApiTests
     {
-        private readonly CsfdApi csfdApi = new CsfdApi();
+        private readonly CsfdApi _csfdApi = new CsfdApi();
 
         [TestMethod]
         public void GetMovie_GetsMovie()
         {
-            var mov = csfdApi.GetMovie("http://www.csfd.cz/film/6648-predator/");
+            var mov = _csfdApi.GetMovie("http://www.csfd.cz/film/6648-predator/");
 
             // Check title
             const string expectedTitle = "Predátor / Predator";
@@ -35,7 +35,7 @@ namespace CsfdAPI.Tests
         [TestMethod]
         public void GetMovie_GetsMovieWithoutGenres()
         {
-            var mov = csfdApi.GetMovie("http://csfd.cz/film/37558-hedy/");
+            var mov = _csfdApi.GetMovie("http://csfd.cz/film/37558-hedy/");
 
             // Check title
             const string expectedTitle = "Hedy";
@@ -51,7 +51,7 @@ namespace CsfdAPI.Tests
         public void GetMovie_NoPlot()
         {
             // This movie has no plot
-            var movie = csfdApi.GetMovie("http://www.csfd.cz/film/313887-foto");
+            var movie = _csfdApi.GetMovie("http://www.csfd.cz/film/313887-foto");
 
             Assert.AreEqual(string.Empty, movie.Plot);
         }
@@ -59,7 +59,7 @@ namespace CsfdAPI.Tests
         [TestMethod]
         public void SearchMovie_FindsMovie()
         {
-            var result = csfdApi.SearchMovie("12 Years a Slave (2013)");
+            var result = _csfdApi.SearchMovie("12 Years a Slave (2013)");
             Assert.AreEqual(result.Url, "http://www.csfd.cz/film/304544-12-let-v-retezech/");
         }
 
@@ -67,7 +67,7 @@ namespace CsfdAPI.Tests
         [TestMethod]
         public void SearchMovie_DirectRedirect()
         {
-            var result = csfdApi.SearchMovie("Afflicted (2013)");
+            var result = _csfdApi.SearchMovie("Afflicted (2013)");
             Assert.AreEqual(result.Url, "http://www.csfd.cz/film/351411-v-bolestech/");
         }
 
@@ -85,7 +85,7 @@ namespace CsfdAPI.Tests
         [TestMethod]
         public void GetAllCinemaListingsTodayTest()
         {
-            var result = csfdApi.GetAllCinemaListingsToday().ToList();
+            var result = _csfdApi.GetAllCinemaListingsToday().ToList();
             Assert.IsTrue(result.Count > 0);
             result.ForEach(AssertListingIsCorrect);
         }
@@ -93,7 +93,7 @@ namespace CsfdAPI.Tests
         [TestMethod]
         public void GetAllCinemaListingsTomorrowTest()
         {
-            var result = csfdApi.GetAllCinemaListingsTomorrow().ToList();
+            var result = _csfdApi.GetAllCinemaListingsTomorrow().ToList();
             Assert.IsTrue(result.Count > 0);
             result.ForEach(AssertListingIsCorrect);
         }
@@ -101,7 +101,7 @@ namespace CsfdAPI.Tests
         [TestMethod]
         public void GetAllCinemaListingsTest()
         {
-            var result = csfdApi.GetAllCinemaListings().ToList();
+            var result = _csfdApi.GetAllCinemaListings().ToList();
             Assert.IsTrue(result.Count > 0);
             result.ForEach(AssertListingIsCorrect);
         }
@@ -109,7 +109,7 @@ namespace CsfdAPI.Tests
         [TestMethod]
         public void GetCinemaListingByUrlTest()
         {
-            var result = csfdApi.GetCinemaListing("http://www.csfd.cz/kino/filtr-1/").ToList();
+            var result = _csfdApi.GetCinemaListing("http://www.csfd.cz/kino/filtr-1/").ToList();
             Assert.IsTrue(result.Count > 0);
             result.ForEach(AssertListingIsCorrect);
         }

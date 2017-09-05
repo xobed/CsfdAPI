@@ -5,39 +5,39 @@ namespace CsfdAPI
 {
     public class CsfdApi
     {
-        private readonly CinemaProgramParser cinemaProgramParser = new CinemaProgramParser();
-        private readonly MovieParser movieParser = new MovieParser();
+        private readonly CinemaProgramParser _cinemaProgramParser = new CinemaProgramParser();
+        private readonly MovieParser _movieParser = new MovieParser();
 
         public Movie GetMovie(string url)
         {
-            return movieParser.GetMovie(url);
+            return _movieParser.GetMovie(url);
         }
 
         public Movie SearchMovie(string query)
         {
-            return movieParser.SearchAndGetMovie(query);
+            return _movieParser.SearchAndGetMovie(query);
         }
 
         public IEnumerable<Cinema> GetAllCinemaListingsToday()
         {
-            return cinemaProgramParser.GetAllCinemaListingsToday();
+            return _cinemaProgramParser.GetAllCinemaListingsToday();
         }
 
         public IEnumerable<Cinema> GetAllCinemaListingsTomorrow()
         {
-            return cinemaProgramParser.GetAllCinemaListingsTomorrow();
+            return _cinemaProgramParser.GetAllCinemaListingsTomorrow();
         }
 
         public IEnumerable<Cinema> GetAllCinemaListings()
         {
-            return cinemaProgramParser.GetAllCinemaListings();
+            return _cinemaProgramParser.GetAllCinemaListings();
         }
 
         // Url example 
         // http://www.csfd.cz/kino/?district-filter=55
         public IEnumerable<Cinema> GetCinemaListing(string url)
         {
-            return cinemaProgramParser.GetCinemaListing(url);
+            return _cinemaProgramParser.GetCinemaListing(url);
         }
     }
 }

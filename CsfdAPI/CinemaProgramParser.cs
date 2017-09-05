@@ -10,7 +10,7 @@ namespace CsfdAPI
 {
     internal class CinemaProgramParser
     {
-        private readonly HtmlLoader htmlLoader = new HtmlLoader();
+        private readonly HtmlLoader _htmlLoader = new HtmlLoader();
 
         internal IEnumerable<Cinema> GetAllCinemaListingsToday()
         {
@@ -51,7 +51,7 @@ namespace CsfdAPI
 
         internal List<Cinema> GetCinemaListing(string url)
         {
-            var document = htmlLoader.GetDocumentByUrl(url);
+            var document = _htmlLoader.GetDocumentByUrl(url);
 
             var cinemaElements = GetCinemaElements(document);
 
