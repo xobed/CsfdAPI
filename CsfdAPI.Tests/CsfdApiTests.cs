@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CsfdAPI.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -30,6 +31,18 @@ namespace CsfdAPI.Tests
             Assert.AreEqual("1987", mov.Year);
 
             Assert.IsFalse(string.IsNullOrEmpty(mov.PosterUrl));
+        }
+
+        [TestMethod]
+        public void GetMovie_WithoutYear()
+        {
+            var mov = _csfdApi.GetMovie("http://csfd.cz/film/541410-douglas-fairbanks-a-mary-pickfordova-navstevou-v-csr/");
+            
+            // Check empty year
+            Assert.AreEqual(String.Empty, mov.Year);
+
+            // Check title is not empty
+            Assert.AreNotEqual(String.Empty, mov.Title);
         }
 
         [TestMethod]

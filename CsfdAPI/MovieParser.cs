@@ -87,8 +87,10 @@ namespace CsfdAPI
             var titlesAndYear = node[0].InnerText.Trim();
             // Remove "| CSFD.cz"
             titlesAndYear = titlesAndYear.Substring(0, titlesAndYear.LastIndexOf("|", StringComparison.Ordinal)).Trim();
-            // Remove year
-            return titlesAndYear.Substring(0, titlesAndYear.LastIndexOf("(", StringComparison.Ordinal)).Trim();
+            
+            // Check if year is present and remove it from title
+            var indexOfLeftBrace = titlesAndYear.LastIndexOf("(", StringComparison.Ordinal);
+            return indexOfLeftBrace > 0 ? titlesAndYear.Substring(0, indexOfLeftBrace).Trim() : titlesAndYear;
         }
 
         /// <summary>
