@@ -173,6 +173,11 @@ namespace CsfdAPI
         private string GetPosterUrl(HtmlDocument doc)
         {
             var node = doc.DocumentNode.SelectNodes("//img[@class='film-poster']");
+            if (node == null)
+            {
+                // Not all movies have posters
+                return null;
+            }
             var posterUrl = node[0].OuterHtml;
             posterUrl = posterUrl.Split('"')[1];
             posterUrl = "http:" + posterUrl;

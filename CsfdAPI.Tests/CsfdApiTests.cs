@@ -70,6 +70,13 @@ namespace CsfdAPI.Tests
         }
 
         [TestMethod]
+        public void GetSeriesPart()
+        {
+            var movie = _csfdApi.GetMovie("http://www.csfd.cz/film/71550-30-pripadu-majora-zemana/452532-studna/prehled/");
+            Assert.AreEqual(movie.PosterUrl, null);
+        }
+
+        [TestMethod]
         public void SearchMovie_FindsMovie()
         {
             var result = _csfdApi.SearchMovie("12 Years a Slave (2013)");
