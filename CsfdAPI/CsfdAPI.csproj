@@ -6,7 +6,7 @@
 		<Company></Company>
 		<Authors>xobed</Authors>
 		<Version>1.0.0</Version>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<Copyright>Copyright 2016</Copyright>
 		<PackageProjectUrl>https://github.com/xobed/csfdapi</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/xobed/csfdapi</RepositoryUrl>
