@@ -25,7 +25,7 @@ namespace CsfdAPITests
             Assert.IsTrue((mov.Rating >= 0) && (mov.Rating <= 100));
 
             // Check genres
-            var expectedGenres = new List<string> { "Sci-Fi", "Akèní", "Dobrodružný", "Thriller" };
+            var expectedGenres = new List<string> { "Sci-Fi", "Akèní", "Dobrodružný", "Thriller", "Horor" };
             if (expectedGenres.Except(mov.Genres).Any())
             {
                 Assert.Fail($"Incorrect genres, expected {string.Join(",",expectedGenres)}. {Environment.NewLine}"+
