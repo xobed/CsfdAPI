@@ -31,7 +31,7 @@ namespace CsfdAPITests
             // Check year
             Assert.AreEqual("1987", mov.Year);
 
-            Assert.IsFalse(string.IsNullOrEmpty(mov.PosterUrl));
+            Assert.IsFalse(string.IsNullOrEmpty(mov.PosterUrl), $"Poster URL was empty or null: '{mov.PosterUrl}'");
         }
 
         [TestMethod]
