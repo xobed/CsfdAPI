@@ -9,7 +9,7 @@ namespace CsfdAPI
 {
     internal class MovieParser
     {
-        private readonly HtmlLoader htmlLoader = new HtmlLoader();
+        private readonly HtmlLoader _htmlLoader = new HtmlLoader();
 
         /// <summary>
         ///     Loads movie from Csfd.cz URL and returns movie object
@@ -18,7 +18,7 @@ namespace CsfdAPI
         /// <returns>MovieParser class</returns>
         internal Movie GetMovie(string url)
         {
-            var document = htmlLoader.GetDocumentByUrl(url);
+            var document = _htmlLoader.GetDocumentByUrl(url);
 
             var titles = GetTitles(document);
             var year = GetYear(document);
@@ -57,7 +57,7 @@ namespace CsfdAPI
         /// <returns>URL of first result</returns>
         private string SearchMovie(string query)
         {
-            var document = htmlLoader.GetDocumentByUrl("http://www.csfd.cz/hledat/?q=" + query);
+            var document = _htmlLoader.GetDocumentByUrl("http://www.csfd.cz/hledat/?q=" + query);
 
             var node = document.DocumentNode.SelectSingleNode("//*[@id='search-films']/div[1]/ul[1]/li[1]/div/h3/a");
 
@@ -87,8 +87,10 @@ namespace CsfdAPI
             var titlesAndYear = node[0].InnerText.Trim();
             // Remove "| CSFD.cz"
             titlesAndYear = titlesAndYear.Substring(0, titlesAndYear.LastIndexOf("|", StringComparison.Ordinal)).Trim();
-            // Remove year
-            return titlesAndYear.Substring(0, titlesAndYear.LastIndexOf("(", StringComparison.Ordinal)).Trim();
+            
+            // Check if year is present and remove it from title
+            var indexOfLeftBrace = titlesAndYear.LastIndexOf("(", StringComparison.Ordinal);
+            return indexOfLeftBrace > 0 ? titlesAndYear.Substring(0, indexOfLeftBrace).Trim() : titlesAndYear;
         }
 
         /// <summary>
@@ -171,6 +173,11 @@ namespace CsfdAPI
         private string GetPosterUrl(HtmlDocument doc)
         {
             var node = doc.DocumentNode.SelectNodes("//img[@class='film-poster']");
+            if (node == null)
+            {
+                // Not all movies have posters
+                return null;
+            }
             var posterUrl = node[0].OuterHtml;
             posterUrl = posterUrl.Split('"')[1];
             posterUrl = "http:" + posterUrl;

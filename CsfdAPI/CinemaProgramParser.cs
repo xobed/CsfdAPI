@@ -10,7 +10,7 @@ namespace CsfdAPI
 {
     internal class CinemaProgramParser
     {
-        private readonly HtmlLoader htmlLoader = new HtmlLoader();
+        private readonly HtmlLoader _htmlLoader = new HtmlLoader();
 
         internal IEnumerable<Cinema> GetAllCinemaListingsToday()
         {
@@ -51,7 +51,7 @@ namespace CsfdAPI
 
         internal List<Cinema> GetCinemaListing(string url)
         {
-            var document = htmlLoader.GetDocumentByUrl(url);
+            var document = _htmlLoader.GetDocumentByUrl(url);
 
             var cinemaElements = GetCinemaElements(document);
 
@@ -64,14 +64,14 @@ namespace CsfdAPI
 
             foreach (var cinema in cinemaElements)
             {
-                var titleNode = cinema.SelectSingleNode("div/h2");
+                var titleNode = cinema.SelectSingleNode("./div/h2");
                 var title = titleNode.InnerText;
 
-                var dateTableElements = cinema.SelectNodes("div[@class='content']/table");
+                var dateTableElements = cinema.SelectNodes("./div[@class='content']/table");
                 var movieList = new List<CinemaMovie>();
                 foreach (var tableElement in dateTableElements)
                 {
-                    var dateNode = tableElement.SelectSingleNode("caption");
+                    var dateNode = tableElement.SelectSingleNode("./caption");
                     var date = GetDateFromDateNode(dateNode);
 
                     var movieNodes = GetMovieElements(tableElement);
@@ -103,20 +103,20 @@ namespace CsfdAPI
 
         private HtmlNodeCollection GetMovieElements(HtmlNode cinemaNode)
         {
-            var result = cinemaNode.SelectNodes("tr");
+            var result = cinemaNode.SelectNodes("./tr");
             return result;
         }
 
         private CinemaMovie GetMovie(HtmlNode movieNode, DateTime date)
         {
-            var titleNode = movieNode.SelectSingleNode("th/a");
+            var titleNode = movieNode.SelectSingleNode("./th/a");
 
             var title = titleNode.InnerText;
             var url = $"http://csfd.cz{titleNode.GetAttributeValue("href", "")}";
-            var yearNode = movieNode.SelectSingleNode("th/span");
-            var year = yearNode.InnerText;
+            var yearNode = movieNode.SelectSingleNode("./th/span");
+            var year = yearNode?.InnerText;
 
-            var timeNodes = movieNode.SelectNodes("td[not(@class)]");
+            var timeNodes = movieNode.SelectNodes("./td[not(@class)]");
 
             var timeList = GetTimeList(timeNodes, date);
 
@@ -150,7 +150,7 @@ namespace CsfdAPI
 
         private List<string> GetFlags(HtmlNode movieNode)
         {
-            var flagNodes = movieNode.SelectNodes("td[@class='flags']/span");
+            var flagNodes = movieNode.SelectNodes("./td[@class='flags']/span");
 
             var flagList = new List<string>();
             if (flagNodes != null)
