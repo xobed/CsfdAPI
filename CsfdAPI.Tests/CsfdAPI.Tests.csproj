@@ -36,6 +36,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.6.3.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.6.3\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -56,9 +59,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CsfdAPI\CsfdAPI.csproj">
-      <Project>{3FB4CB06-B8B0-4411-A0D9-383AE8831615}</Project>
+      <Project>{3fb4cb06-b8b0-4411-a0d9-383ae8831615}</Project>
       <Name>CsfdAPI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
