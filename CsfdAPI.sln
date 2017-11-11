@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsfdAPI", "CsfdAPI\CsfdAPI.csproj", "{3FB4CB06-B8B0-4411-A0D9-383AE8831615}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsfdAPI.Tests", "CsfdAPI.Tests\CsfdAPI.Tests.csproj", "{2863CD27-67E1-4C35-8A39-F76E52FA8643}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsfdAPITests", "CsfdAPITests\CsfdAPITests.csproj", "{B7DD21F9-BD85-4172-AA8B-A4A46C3CA093}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,12 +17,15 @@ Global
 		{3FB4CB06-B8B0-4411-A0D9-383AE8831615}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FB4CB06-B8B0-4411-A0D9-383AE8831615}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FB4CB06-B8B0-4411-A0D9-383AE8831615}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2863CD27-67E1-4C35-8A39-F76E52FA8643}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2863CD27-67E1-4C35-8A39-F76E52FA8643}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2863CD27-67E1-4C35-8A39-F76E52FA8643}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2863CD27-67E1-4C35-8A39-F76E52FA8643}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7DD21F9-BD85-4172-AA8B-A4A46C3CA093}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7DD21F9-BD85-4172-AA8B-A4A46C3CA093}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7DD21F9-BD85-4172-AA8B-A4A46C3CA093}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7DD21F9-BD85-4172-AA8B-A4A46C3CA093}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C46D4959-1BBB-4202-9932-34C6E7745A84}
 	EndGlobalSection
 EndGlobal
