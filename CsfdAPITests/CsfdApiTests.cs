@@ -26,7 +26,11 @@ namespace CsfdAPITests
 
             // Check genres
             var expectedGenres = new List<string> { "Sci-Fi", "Akèní", "Dobrodružný", "Thriller" };
-            Assert.IsFalse(expectedGenres.Except(mov.Genres).Any());
+            if (expectedGenres.Except(mov.Genres).Any())
+            {
+                Assert.Fail($"Incorrect genres, expected {string.Join(",",expectedGenres)}. {Environment.NewLine}"+
+                            $"Actual {string.Join(",", mov.Genres)}");
+            }
 
             // Check year
             Assert.AreEqual("1987", mov.Year);
