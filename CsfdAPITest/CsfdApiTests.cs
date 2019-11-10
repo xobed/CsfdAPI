@@ -5,7 +5,7 @@ using CsfdAPI;
 using CsfdAPI.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CsfdAPITests
+namespace CsfdAPITest
 {
     [TestClass]
     public class CsfdApiTests
