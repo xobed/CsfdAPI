@@ -12,8 +12,13 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 2.2.108
+        dotnet-version: 3.0.100
     - name: Test
       run: dotnet test
     - name: Pack and publish
-      run: dotnet pack
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      run: |
+        VERSION=$(date '+%Y.%m.%d').${GITHUB_SHA:0:6}
+        dotnet pack -c RELEASE -p:Version=$VERSION -o out/
+        dotnet push out/CsfdAPI.$VERSION.nupkg -k $NUGET_API_KEY
