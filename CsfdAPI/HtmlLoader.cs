@@ -1,13 +1,22 @@
-using System;
-using System.IO;
 using System.Net;
-using System.Text;
+using System.Net.Http;
 using HtmlAgilityPack;
 
 namespace CsfdAPI
 {
     public class HtmlLoader
     {
+        private readonly HttpClient _client;
+
+        public HtmlLoader()
+        {
+            var handler = new HttpClientHandler
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            };
+            _client = new HttpClient(handler);
+        }
+
         /// <summary>
         ///     Get HTMLDocument by URL
         /// </summary>
@@ -15,23 +24,10 @@ namespace CsfdAPI
         /// <returns>HtmlDocument instance</returns>
         public HtmlDocument GetDocumentByUrl(string url)
         {
-            var request = (HttpWebRequest) WebRequest.Create(url);
-            request.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip,deflate");
-            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-            var response = request.GetResponse();
-            using (var stream = response.GetResponseStream())
-            {
-                if (stream != null)
-                {
-                    var reader = new StreamReader(stream, Encoding.UTF8);
-                    var responseString = reader.ReadToEnd();
-                    var htmlDocument = new HtmlDocument();
-                    htmlDocument.LoadHtml(responseString);
-                    return htmlDocument;
-                }
-            }
-
-            throw new Exception($"Failed to load document with url {url}");
+            var responseString = _client.GetStringAsync(url).Result;
+            var htmlDocument = new HtmlDocument();
+            htmlDocument.LoadHtml(responseString);
+            return htmlDocument;
         }
     }
 }
