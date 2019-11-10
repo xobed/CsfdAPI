@@ -87,14 +87,6 @@ namespace CsfdAPITests
             Assert.AreEqual(result.Url, "http://www.csfd.cz/film/304544-12-let-v-retezech/");
         }
 
-        // Some CSFD search queries redirect directly to movie URL
-        [TestMethod]
-        public void SearchMovie_DirectRedirect()
-        {
-            var result = _csfdApi.SearchMovie("Afflicted (2013)");
-            Assert.AreEqual(result.Url, "http://www.csfd.cz/film/351411-v-bolestech/");
-        }
-
         private void AssertListingIsCorrect(Cinema cinema)
         {
             Assert.IsFalse(string.IsNullOrEmpty(cinema.CinemaName));
