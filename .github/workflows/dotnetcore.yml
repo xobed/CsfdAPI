@@ -15,10 +15,14 @@ jobs:
         dotnet-version: 3.0.100
     - name: Test
       run: dotnet test
+    - name: Generate build number
+      uses: einaregilsson/build-number@v1 
+      with:
+        token: ${{secrets.github_token}}        
     - name: Pack and publish
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       run: |
-        VERSION=$(date '+%Y.%m.%d').${GITHUB_SHA:0:6}
+        VERSION=$(date '+%Y.%m.%d').$BUILD_NUMBER
         dotnet pack -c RELEASE -p:Version=$VERSION -o out/
         dotnet push out/CsfdAPI.$VERSION.nupkg -k $NUGET_API_KEY
