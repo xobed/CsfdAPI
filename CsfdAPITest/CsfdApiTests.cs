@@ -18,7 +18,7 @@ namespace CsfdAPITest
             var mov = _csfdApi.GetMovie("http://www.csfd.cz/film/6648-predator/");
 
             // Check title
-            const string expectedTitle = "Pred·tor / Predator";
+            const string expectedTitle = "Pred√°tor / Predator";
             Assert.AreEqual(expectedTitle, mov.Title);
 
             // Rating should be 0-100
