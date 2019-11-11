@@ -25,4 +25,4 @@ jobs:
       run: |
         VERSION=$(date '+%Y.%m.%d').$BUILD_NUMBER
         dotnet pack -c RELEASE -p:Version=$VERSION -o out/
-        dotnet nuget push out/CsfdAPI.$VERSION.nupkg -k $NUGET_API_KEY
+        dotnet nuget push out/CsfdAPI.$VERSION.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json
