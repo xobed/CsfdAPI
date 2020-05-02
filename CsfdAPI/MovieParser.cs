@@ -27,6 +27,7 @@ namespace CsfdAPI
             var rating = GetRating(document);
             var plot = GetPlot(document);
             var posterUrl = GetPosterUrl(document);
+            var seriesLinks = GetSeriesLinks(document);
 
             return new Movie
             {
@@ -36,7 +37,8 @@ namespace CsfdAPI
                 Genres = genres,
                 Rating = rating,
                 Plot = plot,
-                PosterUrl = posterUrl
+                PosterUrl = posterUrl,
+                SeriesLinks = seriesLinks
             };
         }
 
@@ -65,11 +67,9 @@ namespace CsfdAPI
             if (node == null)
             {
                 node = document.DocumentNode.SelectSingleNode("//*[@id='main']/div[4]/div[1]/ul/li[1]/a");
-                if (node == null)
-                {
-                    throw new Exception($"Failed to find movie with query '{query}'");
-                }
+                if (node == null) throw new Exception($"Failed to find movie with query '{query}'");
             }
+
             var movieUrl = node.Attributes["href"].Value;
 
             return "http://www.csfd.cz" + movieUrl;
@@ -87,7 +87,7 @@ namespace CsfdAPI
             var titlesAndYear = node[0].InnerText.Trim();
             // Remove "| CSFD.cz"
             titlesAndYear = titlesAndYear.Substring(0, titlesAndYear.LastIndexOf("|", StringComparison.Ordinal)).Trim();
-            
+
             // Check if year is present and remove it from title
             var indexOfLeftBrace = titlesAndYear.LastIndexOf("(", StringComparison.Ordinal);
             return indexOfLeftBrace > 0 ? titlesAndYear.Substring(0, indexOfLeftBrace).Trim() : titlesAndYear;
@@ -102,10 +102,7 @@ namespace CsfdAPI
         private List<string> GetGenres(HtmlDocument doc)
         {
             var node = doc.DocumentNode.SelectNodes("//*[@id='profile']//p[@class='genre']");
-            if (node == null)
-            {
-                return new List<string>();
-            }
+            if (node == null) return new List<string>();
             var genres = node[0].InnerText.Trim();
             return genres.Split('/').Select(g => g.Trim()).ToList();
         }
@@ -158,10 +155,7 @@ namespace CsfdAPI
         {
             var node = doc.DocumentNode.SelectNodes("//div[@id='plots']//ul/li");
 
-            if (node?[0] != null)
-            {
-                return node[0].InnerText.Trim();
-            }
+            if (node?[0] != null) return node[0].InnerText.Trim();
             return string.Empty;
         }
 
@@ -174,14 +168,27 @@ namespace CsfdAPI
         {
             var node = doc.DocumentNode.SelectNodes("//img[@class='film-poster']");
             if (node == null)
-            {
                 // Not all movies have posters
                 return null;
-            }
             var posterUrl = node[0].OuterHtml;
             posterUrl = posterUrl.Split('"')[1];
             posterUrl = "http:" + posterUrl;
             return posterUrl;
+        }
+
+        /// <summary>
+        ///     Get url of movie poster
+        /// </summary>
+        /// <param name="doc">HtmlDocument</param>
+        /// <returns>Url of movie poster</returns>
+        private List<string> GetSeriesLinks(HtmlDocument doc)
+        {
+            var node = doc.DocumentNode.SelectNodes("//div[@id='children']//div[@class='content']//a");
+            if (node == null)
+            {
+                return new List<string>();
+            }
+            return node.Select(n => $"https://www.csfd.cz/{n.Attributes["href"].Value}").ToList();
         }
     }
 }

@@ -86,6 +86,13 @@ namespace CsfdAPITest
         {
             var result = await _csfdApi.SearchMovie("12 Years a Slave (2013)");
             Assert.AreEqual(result.Url, "http://www.csfd.cz/film/304544-12-let-v-retezech/");
+        }     
+        
+        [TestMethod]
+        public async Task GetMovie_GetsSeriesLinks()
+        {
+            var result = await _csfdApi.GetMovie("https://www.csfd.cz/film/265160-vetrelci-davnoveku/");
+            Assert.IsTrue(result.SeriesLinks.Count > 0);
         }
 
         private void AssertListingIsCorrect(Cinema cinema)
