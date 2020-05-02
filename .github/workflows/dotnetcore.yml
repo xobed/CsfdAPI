@@ -24,5 +24,5 @@ jobs:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       run: |
         VERSION=$(date '+%Y.%m.%d').$BUILD_NUMBER
-        dotnet pack -c RELEASE -p:Version=$VERSION -o out/
-        dotnet nuget push CsfdAPI/out/CsfdAPI.$VERSION.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json
+        dotnet pack -c RELEASE -p:Version=$VERSION
+        dotnet nuget push CsfdAPI/bin/Release/CsfdAPI.$VERSION.nupkg -k $NUGET_API_KEY -s https://api.nuget.org/v3/index.json
