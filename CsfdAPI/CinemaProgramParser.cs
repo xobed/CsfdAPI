@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using CsfdAPI.Model;
 using HtmlAgilityPack;
 
@@ -12,46 +13,46 @@ namespace CsfdAPI
     {
         private readonly HtmlLoader _htmlLoader = new HtmlLoader();
 
-        internal IEnumerable<Cinema> GetAllCinemaListingsToday()
+        internal async Task<IEnumerable<Cinema>> GetAllCinemaListingsToday()
         {
             var allCinemaList = new List<Cinema>();
 
             // CZ
-            allCinemaList.AddRange(GetCinemaListing("http://www.csfd.cz/kino/filtr-1/?district-filter=0"));
+            allCinemaList.AddRange(await GetCinemaListing("http://www.csfd.cz/kino/filtr-1/?district-filter=0"));
             // SK
-            allCinemaList.AddRange(GetCinemaListing("http://www.csfd.cz/kino/filtr-2/?district-filter=0"));
+            allCinemaList.AddRange(await GetCinemaListing("http://www.csfd.cz/kino/filtr-2/?district-filter=0"));
 
             return allCinemaList;
         }
 
         // Todo - fix datetime
-        internal IEnumerable<Cinema> GetAllCinemaListingsTomorrow()
+        internal async Task<IEnumerable<Cinema>> GetAllCinemaListingsTomorrow()
         {
             var allCinemaList = new List<Cinema>();
 
             // CZ
-            allCinemaList.AddRange(GetCinemaListing("http://www.csfd.cz/kino/filtr-1/?period=tomorrow&district-filter=0"));
+            allCinemaList.AddRange(await GetCinemaListing("http://www.csfd.cz/kino/filtr-1/?period=tomorrow&district-filter=0"));
             // SK
-            allCinemaList.AddRange(GetCinemaListing("http://www.csfd.cz/kino/filtr-2/?period=tomorrow&district-filter=0"));
+            allCinemaList.AddRange(await GetCinemaListing("http://www.csfd.cz/kino/filtr-2/?period=tomorrow&district-filter=0"));
 
             return allCinemaList;
         }
         
-        internal IEnumerable<Cinema> GetAllCinemaListings()
+        internal async Task<IEnumerable<Cinema>> GetAllCinemaListings()
         {
             var allCinemaList = new List<Cinema>();
 
             // CZ
-            allCinemaList.AddRange(GetCinemaListing("http://www.csfd.cz/kino/filtr-1/?period=all&district-filter=0"));
+            allCinemaList.AddRange(await GetCinemaListing("http://www.csfd.cz/kino/filtr-1/?period=all&district-filter=0"));
             // SK
-            allCinemaList.AddRange(GetCinemaListing("http://www.csfd.cz/kino/filtr-2/?period=all&district-filter=0"));
+            allCinemaList.AddRange(await GetCinemaListing("http://www.csfd.cz/kino/filtr-2/?period=all&district-filter=0"));
 
             return allCinemaList;
         }
 
-        internal List<Cinema> GetCinemaListing(string url)
+        internal async Task<List<Cinema>> GetCinemaListing(string url)
         {
-            var document = _htmlLoader.GetDocumentByUrl(url);
+            var document = await _htmlLoader.GetDocumentByUrl(url);
 
             var cinemaElements = GetCinemaElements(document);
 

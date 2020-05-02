@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 
 namespace CsfdAPI
@@ -22,9 +23,9 @@ namespace CsfdAPI
         /// </summary>
         /// <param name="url">URL to load HTML from</param>
         /// <returns>HtmlDocument instance</returns>
-        public HtmlDocument GetDocumentByUrl(string url)
+        public async Task<HtmlDocument> GetDocumentByUrl(string url)
         {
-            var responseString = _client.GetStringAsync(url).Result;
+            var responseString = await _client.GetStringAsync(url);
             var htmlDocument = new HtmlDocument();
             htmlDocument.LoadHtml(responseString);
             return htmlDocument;

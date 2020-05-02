@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CsfdAPI;
 using CsfdAPI.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -13,23 +13,22 @@ namespace CsfdAPITest
         private readonly CsfdApi _csfdApi = new CsfdApi();
 
         [TestMethod]
-        public void GetMovie_GetsMovie()
+        public async Task GetMovie_GetsMovie()
         {
-            var mov = _csfdApi.GetMovie("http://www.csfd.cz/film/6648-predator/");
+            var mov = await _csfdApi.GetMovie("http://www.csfd.cz/film/6648-predator/");
 
             // Check title
             const string expectedTitle = "Predátor / Predator";
             Assert.AreEqual(expectedTitle, mov.Title);
 
             // Rating should be 0-100
-            Assert.IsTrue((mov.Rating >= 0) && (mov.Rating <= 100));
+            Assert.IsTrue(mov.Rating >= 0 && mov.Rating <= 100);
 
             // Check genres
-            var expectedGenres = new List<string> { "Sci-Fi", "Thriller", "Horor" };
+            var expectedGenres = new List<string> {"Sci-Fi", "Thriller", "Horor"};
             foreach (var genre in expectedGenres)
-            {
-                Assert.IsTrue(expectedGenres.Contains(genre), $"Movie genres do not contain expected genre '{genre}'. Actual genres: '{string.Join(",", mov.Genres)}'");
-            }
+                Assert.IsTrue(expectedGenres.Contains(genre),
+                    $"Movie genres do not contain expected genre '{genre}'. Actual genres: '{string.Join(",", mov.Genres)}'");
 
             // Check year
             Assert.AreEqual("1987", mov.Year);
@@ -38,21 +37,22 @@ namespace CsfdAPITest
         }
 
         [TestMethod]
-        public void GetMovie_WithoutYear()
+        public async Task GetMovie_WithoutYear()
         {
-            var mov = _csfdApi.GetMovie("http://csfd.cz/film/541410-douglas-fairbanks-a-mary-pickfordova-navstevou-v-csr/");
+            var mov = await _csfdApi.GetMovie(
+                "http://csfd.cz/film/541410-douglas-fairbanks-a-mary-pickfordova-navstevou-v-csr/");
 
             // Check empty year
-            Assert.AreEqual(String.Empty, mov.Year);
+            Assert.AreEqual(string.Empty, mov.Year);
 
             // Check title is not empty
-            Assert.AreNotEqual(String.Empty, mov.Title);
+            Assert.AreNotEqual(string.Empty, mov.Title);
         }
 
         [TestMethod]
-        public void GetMovie_GetsMovieWithoutGenres()
+        public async Task GetMovie_GetsMovieWithoutGenres()
         {
-            var mov = _csfdApi.GetMovie("http://csfd.cz/film/37558-hedy/");
+            var mov = await _csfdApi.GetMovie("http://csfd.cz/film/37558-hedy/");
 
             // Check title
             const string expectedTitle = "Hedy";
@@ -65,25 +65,26 @@ namespace CsfdAPITest
         }
 
         [TestMethod]
-        public void GetMovie_NoPlot()
+        public async Task GetMovie_NoPlot()
         {
             // This movie has no plot
-            var movie = _csfdApi.GetMovie("http://www.csfd.cz/film/313887-foto");
+            var movie = await _csfdApi.GetMovie("http://www.csfd.cz/film/313887-foto");
 
             Assert.AreEqual(string.Empty, movie.Plot);
         }
 
         [TestMethod]
-        public void GetSeriesPart()
+        public async Task GetSeriesPart()
         {
-            var movie = _csfdApi.GetMovie("http://www.csfd.cz/film/71550-30-pripadu-majora-zemana/452532-studna/prehled/");
+            var movie = await _csfdApi.GetMovie(
+                "http://www.csfd.cz/film/71550-30-pripadu-majora-zemana/452532-studna/prehled/");
             Assert.AreEqual(movie.PosterUrl, null);
         }
 
         [TestMethod]
-        public void SearchMovie_FindsMovie()
+        public async Task SearchMovie_FindsMovie()
         {
-            var result = _csfdApi.SearchMovie("12 Years a Slave (2013)");
+            var result = await _csfdApi.SearchMovie("12 Years a Slave (2013)");
             Assert.AreEqual(result.Url, "http://www.csfd.cz/film/304544-12-let-v-retezech/");
         }
 
@@ -99,33 +100,33 @@ namespace CsfdAPITest
         }
 
         [TestMethod]
-        public void GetAllCinemaListingsTodayTest()
+        public async Task GetAllCinemaListingsTodayTest()
         {
-            var result = _csfdApi.GetAllCinemaListingsToday().ToList();
+            var result = (await _csfdApi.GetAllCinemaListingsToday()).ToList();
             Assert.IsTrue(result.Count > 0);
             result.ForEach(AssertListingIsCorrect);
         }
 
         [TestMethod]
-        public void GetAllCinemaListingsTomorrowTest()
+        public async Task GetAllCinemaListingsTomorrowTest()
         {
-            var result = _csfdApi.GetAllCinemaListingsTomorrow().ToList();
+            var result = (await _csfdApi.GetAllCinemaListingsTomorrow()).ToList();
             Assert.IsTrue(result.Count > 0);
             result.ForEach(AssertListingIsCorrect);
         }
 
         [TestMethod]
-        public void GetAllCinemaListingsTest()
+        public async Task GetAllCinemaListingsTest()
         {
-            var result = _csfdApi.GetAllCinemaListings().ToList();
+            var result = (await _csfdApi.GetAllCinemaListings()).ToList();
             Assert.IsTrue(result.Count > 0);
             result.ForEach(AssertListingIsCorrect);
         }
 
         [TestMethod]
-        public void GetCinemaListingByUrlTest()
+        public async Task GetCinemaListingByUrlTest()
         {
-            var result = _csfdApi.GetCinemaListing("http://www.csfd.cz/kino/filtr-1/").ToList();
+            var result = (await _csfdApi.GetCinemaListing("http://www.csfd.cz/kino/filtr-1/")).ToList();
             Assert.IsTrue(result.Count > 0);
             result.ForEach(AssertListingIsCorrect);
         }

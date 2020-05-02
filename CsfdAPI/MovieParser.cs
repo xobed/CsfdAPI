@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using CsfdAPI.Model;
 using HtmlAgilityPack;
 
@@ -16,9 +17,9 @@ namespace CsfdAPI
         /// </summary>
         /// <param name="url">URL of movie at CSFD.cz</param>
         /// <returns>MovieParser class</returns>
-        internal Movie GetMovie(string url)
+        internal async Task<Movie> GetMovie(string url)
         {
-            var document = _htmlLoader.GetDocumentByUrl(url);
+            var document = await _htmlLoader.GetDocumentByUrl(url);
 
             var titles = GetTitles(document);
             var year = GetYear(document);
@@ -44,10 +45,9 @@ namespace CsfdAPI
         /// </summary>
         /// <param name="query">Query to search for</param>
         /// <returns>MovieParser object</returns>
-        internal Movie SearchAndGetMovie(string query)
+        internal async Task<Movie> SearchAndGetMovie(string query)
         {
-            var movie = GetMovie(SearchMovie(query));
-            return movie;
+            return await GetMovie(await SearchMovie(query));
         }
 
         /// <summary>
@@ -55,9 +55,9 @@ namespace CsfdAPI
         /// </summary>
         /// <param name="query">Query to search for</param>
         /// <returns>URL of first result</returns>
-        private string SearchMovie(string query)
+        private async Task<string> SearchMovie(string query)
         {
-            var document = _htmlLoader.GetDocumentByUrl("http://www.csfd.cz/hledat/?q=" + query);
+            var document = await _htmlLoader.GetDocumentByUrl("http://www.csfd.cz/hledat/?q=" + query);
 
             var node = document.DocumentNode.SelectSingleNode("//*[@id='search-films']/div[1]/ul[1]/li[1]/div/h3/a");
 
