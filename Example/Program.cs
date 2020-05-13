@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using CsfdAPI;
+using CsfdAPI.Model;
 
 namespace Example
 {
@@ -7,15 +9,18 @@ namespace Example
     {
         private static async Task Main(string[] args)
         {
-            var csfdApi = new CsfdApi();
+            CsfdApi csfdApi = new CsfdApi();
             // Get movie by exact URL
-            var movie = await csfdApi.GetMovie("https://www.csfd.cz/film/6648-predator/prehled/");
+            Movie movie = await csfdApi.GetMovie("https://www.csfd.cz/film/6648-predator/prehled/");
 
-            // Get movie by search
-            var searched = await csfdApi.SearchMovie("Predátor (1987)");
+            // Get single movie by search
+            Movie foundMovie = await csfdApi.SearchMovie("Predátor (1987)");
+            
+            // Get urls returned by search
+            List<string> foundUrls = await csfdApi.SearchMovies("Predátor");
 
             // Get todays Cinema listings
-            var listings = await csfdApi.GetAllCinemaListingsToday();
+            IEnumerable<Cinema> listings = await csfdApi.GetAllCinemaListingsToday();
         }
     }
 }

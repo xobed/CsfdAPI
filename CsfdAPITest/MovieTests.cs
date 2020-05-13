@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CsfdAPITest
 {
     [TestClass]
-    public class CsfdApiTests
+    public class MovieTests
     {
         private readonly CsfdApi _csfdApi = new CsfdApi();
 
@@ -82,60 +82,10 @@ namespace CsfdAPITest
         }
 
         [TestMethod]
-        public async Task SearchMovie_FindsMovie()
-        {
-            var result = await _csfdApi.SearchMovie("12 Years a Slave (2013)");
-            Assert.AreEqual(result.Url, "http://www.csfd.cz/film/304544-12-let-v-retezech/");
-        }     
-        
-        [TestMethod]
         public async Task GetMovie_GetsSeriesLinks()
         {
             var result = await _csfdApi.GetMovie("https://www.csfd.cz/film/265160-vetrelci-davnoveku/");
             Assert.IsTrue(result.SeriesLinks.Count > 0);
-        }
-
-        private void AssertListingIsCorrect(Cinema cinema)
-        {
-            Assert.IsFalse(string.IsNullOrEmpty(cinema.CinemaName));
-            foreach (var cinemaMovie in cinema.Movies)
-            {
-                Assert.IsTrue(cinemaMovie.Url.Contains("csfd.cz/film"));
-                Assert.IsFalse(string.IsNullOrEmpty(cinemaMovie.MovieName));
-                Assert.IsTrue(cinemaMovie.Times.Any());
-            }
-        }
-
-        [TestMethod]
-        public async Task GetAllCinemaListingsTodayTest()
-        {
-            var result = (await _csfdApi.GetAllCinemaListingsToday()).ToList();
-            Assert.IsTrue(result.Count > 0);
-            result.ForEach(AssertListingIsCorrect);
-        }
-
-        [TestMethod]
-        public async Task GetAllCinemaListingsTomorrowTest()
-        {
-            var result = (await _csfdApi.GetAllCinemaListingsTomorrow()).ToList();
-            Assert.IsTrue(result.Count > 0);
-            result.ForEach(AssertListingIsCorrect);
-        }
-
-        [TestMethod]
-        public async Task GetAllCinemaListingsTest()
-        {
-            var result = (await _csfdApi.GetAllCinemaListings()).ToList();
-            Assert.IsTrue(result.Count > 0);
-            result.ForEach(AssertListingIsCorrect);
-        }
-
-        [TestMethod]
-        public async Task GetCinemaListingByUrlTest()
-        {
-            var result = (await _csfdApi.GetCinemaListing("http://www.csfd.cz/kino/filtr-1/")).ToList();
-            Assert.IsTrue(result.Count > 0);
-            result.ForEach(AssertListingIsCorrect);
         }
     }
 }

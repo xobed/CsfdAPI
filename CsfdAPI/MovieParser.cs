@@ -43,39 +43,6 @@ namespace CsfdAPI
         }
 
         /// <summary>
-        ///     Search for movie by query and return first result as movie object
-        /// </summary>
-        /// <param name="query">Query to search for</param>
-        /// <returns>MovieParser object</returns>
-        internal async Task<Movie> SearchAndGetMovie(string query)
-        {
-            return await GetMovie(await SearchMovie(query));
-        }
-
-        /// <summary>
-        ///     Performs search on CSFD cz for given query
-        /// </summary>
-        /// <param name="query">Query to search for</param>
-        /// <returns>URL of first result</returns>
-        private async Task<string> SearchMovie(string query)
-        {
-            var document = await _htmlLoader.GetDocumentByUrl("http://www.csfd.cz/hledat/?q=" + query);
-
-            var node = document.DocumentNode.SelectSingleNode("//*[@id='search-films']/div[1]/ul[1]/li[1]/div/h3/a");
-
-            // Some CSFD searches redirect directly to MovieURL, get current url from 'comments' link
-            if (node == null)
-            {
-                node = document.DocumentNode.SelectSingleNode("//*[@id='main']/div[4]/div[1]/ul/li[1]/a");
-                if (node == null) throw new Exception($"Failed to find movie with query '{query}'");
-            }
-
-            var movieUrl = node.Attributes["href"].Value;
-
-            return "http://www.csfd.cz" + movieUrl;
-        }
-
-        /// <summary>
         ///     Returns CZ title / International title
         /// </summary>
         /// >

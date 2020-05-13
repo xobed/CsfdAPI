@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CsfdAPI.Model;
 
@@ -8,6 +9,7 @@ namespace CsfdAPI
     {
         private readonly CinemaProgramParser _cinemaProgramParser = new CinemaProgramParser();
         private readonly MovieParser _movieParser = new MovieParser();
+        private readonly SearchParser _searchParser= new SearchParser();
 
         public async Task<Movie> GetMovie(string url)
         {
@@ -16,7 +18,12 @@ namespace CsfdAPI
 
         public async Task<Movie> SearchMovie(string query)
         {
-            return await _movieParser.SearchAndGetMovie(query);
+            var result = (await _searchParser.SearchMovies(query)).First();
+            return await _movieParser.GetMovie(result);
+        }
+        public async Task<List<string>> SearchMovies(string query)
+        {
+            return await _searchParser.SearchMovies(query);
         }
 
         public async Task<IEnumerable<Cinema>> GetAllCinemaListingsToday()
