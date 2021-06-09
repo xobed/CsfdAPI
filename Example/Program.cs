@@ -13,14 +13,11 @@ namespace Example
             // Get movie by exact URL
             Movie movie = await csfdApi.GetMovie("https://www.csfd.cz/film/6648-predator/prehled/");
 
-            // Get single movie by search
-            Movie foundMovie = await csfdApi.SearchMovie("Predátor (1987)");
-            
-            // Get urls returned by search
-            List<string> foundUrls = await csfdApi.SearchMovies("Predátor");
+            // Get all Cinema listings
+            IEnumerable<Cinema> listings = await csfdApi.GetAllCinemaListings();
 
-            // Get todays Cinema listings
-            IEnumerable<Cinema> listings = await csfdApi.GetAllCinemaListingsToday();
+            // Get Cinema listings in Prague
+            IEnumerable<Cinema> listingsPrague = await csfdApi.GetCinemaListing("https://www.csfd.cz/kino/?district=1&period=all");
         }
     }
 }

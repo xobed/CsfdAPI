@@ -43,15 +43,17 @@ namespace CsfdAPI
             var allCinemaList = new List<Cinema>();
 
             // CZ
-            allCinemaList.AddRange(await GetCinemaListing("http://www.csfd.cz/kino/filtr-1/?period=all&district-filter=0"));
+            allCinemaList.AddRange(await GetCinemaListing("https://www.csfd.cz/kino/?period=all"));
             // SK
-            allCinemaList.AddRange(await GetCinemaListing("http://www.csfd.cz/kino/filtr-2/?period=all&district-filter=0"));
+            allCinemaList.AddRange(await GetCinemaListing("https://www.csfd.sk/kino/?period=all"));
 
             return allCinemaList;
         }
 
         internal async Task<List<Cinema>> GetCinemaListing(string url)
         {
+            var uri = new Uri(url);
+
             var document = await _htmlLoader.GetDocumentByUrl(url);
 
             var cinemaElements = GetCinemaElements(document);
@@ -65,18 +67,25 @@ namespace CsfdAPI
 
             foreach (var cinema in cinemaElements)
             {
-                var titleNode = cinema.SelectSingleNode("./div/h2");
+                var titleNode = cinema.SelectSingleNode(".//h2");
                 var title = titleNode.InnerText;
 
-                var dateTableElements = cinema.SelectNodes("./div[@class='content']/table");
+                var divNodes = cinema.SelectNodes("./div");
                 var movieList = new List<CinemaMovie>();
-                foreach (var tableElement in dateTableElements)
-                {
-                    var dateNode = tableElement.SelectSingleNode("./caption");
-                    var date = GetDateFromDateNode(dateNode);
+                DateTime currentDate = GetDateFromDateNode(divNodes.First());
 
-                    var movieNodes = GetMovieElements(tableElement);
-                    movieList.AddRange(movieNodes.Select(n => GetMovie(n, date)));
+                foreach (var cinemaLineNode in divNodes)
+                {
+                    var nodeClasses = cinemaLineNode.GetClasses().ToList();
+                    if (nodeClasses.Count == 1 && nodeClasses.First() == "box-sub-header")
+                    {
+                        currentDate = GetDateFromDateNode(cinemaLineNode);
+                    }
+                    else
+                    {
+                        var movieNodes = GetMovieElements(cinemaLineNode);
+                        movieList.AddRange(movieNodes.Select(n => GetMovie(n, currentDate, uri.Host)));
+                    }
                 }
 
                 cinemaListing.Add(new Cinema
@@ -92,30 +101,26 @@ namespace CsfdAPI
         private DateTime GetDateFromDateNode(HtmlNode dateNode)
         {
             string dateString = Regex.Match(dateNode.InnerHtml, @"\d{1,2}\.\d{1,2}\.\d{4}").Value;
-            string format = "d.M.yyyy";
+            string format = "dd.MM.yyyy";
             return DateTime.ParseExact(dateString, format, CultureInfo.InvariantCulture);
         }
 
         private HtmlNodeCollection GetCinemaElements(HtmlDocument doc)
         {
-            var result = doc.DocumentNode.SelectNodes("//*[contains(@class,'cinema')]");
-            return result;
+            return doc.DocumentNode.SelectNodes("//section[contains(@id,'cinema')]");
         }
 
         private HtmlNodeCollection GetMovieElements(HtmlNode cinemaNode)
         {
-            var result = cinemaNode.SelectNodes("./tr");
-            return result;
+            return cinemaNode.SelectNodes(".//tr[not(contains(@class,'tr-mobile-name'))]");
         }
 
-        private CinemaMovie GetMovie(HtmlNode movieNode, DateTime date)
+        private CinemaMovie GetMovie(HtmlNode movieNode, DateTime date, string host="www.csfd.cz")
         {
-            var titleNode = movieNode.SelectSingleNode("./th/a");
+            var titleNode = movieNode.SelectSingleNode(".//a");
 
             var title = titleNode.InnerText;
-            var url = $"http://csfd.cz{titleNode.GetAttributeValue("href", "")}";
-            var yearNode = movieNode.SelectSingleNode("./th/span");
-            var year = yearNode?.InnerText;
+            var url = $"https://{host}{titleNode.GetAttributeValue("href", "")}";
 
             var timeNodes = movieNode.SelectNodes("./td[not(@class)]");
 
@@ -125,7 +130,7 @@ namespace CsfdAPI
 
             return new CinemaMovie
             {
-                MovieName = $"{title} {year}",
+                MovieName = title,
                 Times = timeList,
                 Url = url,
                 Flags = flags
@@ -134,7 +139,7 @@ namespace CsfdAPI
 
         private List<DateTime> GetTimeList(HtmlNodeCollection timeNodes, DateTime date)
         {
-            var timesAsString = from timeNode in timeNodes where !string.IsNullOrEmpty(timeNode.InnerText) select timeNode.InnerText;
+            var timesAsString = from timeNode in timeNodes where !string.IsNullOrEmpty(timeNode.InnerText.Trim()) select timeNode.InnerText.Trim();
             return timesAsString.Select(t => GetDateTimeFromString(date, t)).ToList();
         }
 
@@ -151,32 +156,8 @@ namespace CsfdAPI
 
         private List<string> GetFlags(HtmlNode movieNode)
         {
-            var flagNodes = movieNode.SelectNodes("./td[@class='flags']/span");
-
-            var flagList = new List<string>();
-            if (flagNodes != null)
-            {
-                foreach (var flagNode in flagNodes)
-                {
-                    var flag = string.Empty;
-
-                    switch (flagNode.InnerText)
-                    {
-                        case "D":
-                            flag = "Dabing";
-                            break;
-                        case "T":
-                            flag = "Titulky";
-                            break;
-                        case "3D":
-                            flag = "3D";
-                            break;
-                    }
-                    flagList.Add(flag);
-                }
-            }
-
-            return flagList;
+            var flagNodes = movieNode.SelectNodes(".//td[@class='flags']/span");
+            return flagNodes == null ? new List<string>() : flagNodes.Where(n => !string.IsNullOrEmpty(n.InnerText.Trim())).Select(n => n.InnerText.Trim()).ToList();
         }
     }
 }

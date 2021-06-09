@@ -1,6 +1,9 @@
 name: .NET Core
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   build:
@@ -9,10 +12,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.100
+        dotnet-version: '5.0.x'
     - name: Test
       run: dotnet test
     - name: Generate build number

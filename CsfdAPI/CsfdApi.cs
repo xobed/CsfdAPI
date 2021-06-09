@@ -16,33 +16,13 @@ namespace CsfdAPI
             return await _movieParser.GetMovie(url);
         }
 
-        public async Task<Movie> SearchMovie(string query)
-        {
-            var result = (await _searchParser.SearchMovies(query)).First();
-            return await _movieParser.GetMovie(result);
-        }
-        public async Task<List<string>> SearchMovies(string query)
-        {
-            return await _searchParser.SearchMovies(query);
-        }
-
-        public async Task<IEnumerable<Cinema>> GetAllCinemaListingsToday()
-        {
-            return await _cinemaProgramParser.GetAllCinemaListingsToday();
-        }
-
-        public async Task<IEnumerable<Cinema>> GetAllCinemaListingsTomorrow()
-        {
-            return await _cinemaProgramParser.GetAllCinemaListingsTomorrow();
-        }
-
         public async Task<IEnumerable<Cinema>> GetAllCinemaListings()
         {
             return await _cinemaProgramParser.GetAllCinemaListings();
         }
 
         // Url example 
-        // http://www.csfd.cz/kino/?district-filter=55
+        // https://www.csfd.cz/kino/?district=1&period=all
         public async Task<IEnumerable<Cinema>> GetCinemaListing(string url)
         {
             return await _cinemaProgramParser.GetCinemaListing(url);

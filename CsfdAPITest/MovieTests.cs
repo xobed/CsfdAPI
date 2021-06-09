@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CsfdAPI;
-using CsfdAPI.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CsfdAPITest
@@ -15,17 +14,17 @@ namespace CsfdAPITest
         [TestMethod]
         public async Task GetMovie_GetsMovie()
         {
-            var mov = await _csfdApi.GetMovie("http://www.csfd.cz/film/6648-predator/");
+            var mov = await _csfdApi.GetMovie("https://www.csfd.cz/film/6648-predator/");
 
             // Check title
-            const string expectedTitle = "Predátor / Predator";
+            const string expectedTitle = "Predátor";
             Assert.AreEqual(expectedTitle, mov.Title);
 
             // Rating should be 0-100
             Assert.IsTrue(mov.Rating >= 0 && mov.Rating <= 100);
 
             // Check genres
-            var expectedGenres = new List<string> {"Sci-Fi", "Thriller", "Horor"};
+            var expectedGenres = new List<string> {"Akční", "Sci-Fi", "Horor"};
             foreach (var genre in expectedGenres)
                 Assert.IsTrue(expectedGenres.Contains(genre),
                     $"Movie genres do not contain expected genre '{genre}'. Actual genres: '{string.Join(",", mov.Genres)}'");
@@ -40,7 +39,7 @@ namespace CsfdAPITest
         public async Task GetMovie_WithoutYear()
         {
             var mov = await _csfdApi.GetMovie(
-                "http://csfd.cz/film/541410-douglas-fairbanks-a-mary-pickfordova-navstevou-v-csr/");
+                "https://www.csfd.cz/film/541410-douglas-fairbanks-a-mary-pickfordova-navstevou-v-csr/");
 
             // Check empty year
             Assert.AreEqual(string.Empty, mov.Year);
@@ -52,7 +51,7 @@ namespace CsfdAPITest
         [TestMethod]
         public async Task GetMovie_GetsMovieWithoutGenres()
         {
-            var mov = await _csfdApi.GetMovie("http://csfd.cz/film/37558-hedy/");
+            var mov = await _csfdApi.GetMovie("https://www.csfd.cz/film/37558-hedy/");
 
             // Check title
             const string expectedTitle = "Hedy";
@@ -61,7 +60,6 @@ namespace CsfdAPITest
             Assert.IsTrue(!mov.Genres.Any(), "Expected no genres for this movie");
 
             Assert.AreEqual("1966", mov.Year);
-            Assert.IsFalse(string.IsNullOrEmpty(mov.PosterUrl));
         }
 
         [TestMethod]

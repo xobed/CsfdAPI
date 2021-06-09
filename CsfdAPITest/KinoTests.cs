@@ -16,26 +16,10 @@ namespace CsfdAPITest
             Assert.IsFalse(string.IsNullOrEmpty(cinema.CinemaName));
             foreach (var cinemaMovie in cinema.Movies)
             {
-                Assert.IsTrue(cinemaMovie.Url.Contains("csfd.cz/film"));
+                Assert.IsNotNull(cinemaMovie.Url);
                 Assert.IsFalse(string.IsNullOrEmpty(cinemaMovie.MovieName));
                 Assert.IsTrue(cinemaMovie.Times.Any());
             }
-        }
-
-        [TestMethod]
-        public async Task GetAllCinemaListingsTodayTest()
-        {
-            var result = (await _csfdApi.GetAllCinemaListingsToday()).ToList();
-            Assert.IsTrue(result.Count > 0);
-            result.ForEach(AssertListingIsCorrect);
-        }
-
-        [TestMethod]
-        public async Task GetAllCinemaListingsTomorrowTest()
-        {
-            var result = (await _csfdApi.GetAllCinemaListingsTomorrow()).ToList();
-            Assert.IsTrue(result.Count > 0);
-            result.ForEach(AssertListingIsCorrect);
         }
 
         [TestMethod]
@@ -49,7 +33,7 @@ namespace CsfdAPITest
         [TestMethod]
         public async Task GetCinemaListingByUrlTest()
         {
-            var result = (await _csfdApi.GetCinemaListing("http://www.csfd.cz/kino/filtr-1/")).ToList();
+            var result = (await _csfdApi.GetCinemaListing("https://www.csfd.cz/kino/?district=1&period=all")).ToList();
             Assert.IsTrue(result.Count > 0);
             result.ForEach(AssertListingIsCorrect);
         }

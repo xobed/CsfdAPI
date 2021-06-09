@@ -68,10 +68,10 @@ namespace CsfdAPI
         /// <returns>List of movie genres</returns>
         private List<string> GetGenres(HtmlDocument doc)
         {
-            var node = doc.DocumentNode.SelectNodes("//*[@id='profile']//p[@class='genre']");
+            var node = doc.DocumentNode.SelectSingleNode("//div[@class='genres']");
             if (node == null) return new List<string>();
-            var genres = node[0].InnerText.Trim();
-            return genres.Split('/').Select(g => g.Trim()).ToList();
+            var genres = node.InnerText.Trim();
+            return genres.Split('/').Select(g => g.Trim()).Where(g => g.Length > 0).ToList();
         }
 
         /// <summary>
@@ -99,11 +99,11 @@ namespace CsfdAPI
         {
             int rating;
 
-            var node = document.DocumentNode.SelectSingleNode("//h2[@class='average']");
+            var node = document.DocumentNode.SelectSingleNode("//div[@class='rating-average rating-average-withtabs']");
 
             try
             {
-                rating = int.Parse(Regex.Match(node.InnerText, @"\d*").Value);
+                rating = int.Parse(Regex.Match(node.InnerText, @"\d+").Value);
             }
             catch
             {
@@ -120,10 +120,8 @@ namespace CsfdAPI
         /// <returns>Plot</returns>
         private string GetPlot(HtmlDocument doc)
         {
-            var node = doc.DocumentNode.SelectNodes("//div[@id='plots']//ul/li");
-
-            if (node?[0] != null) return node[0].InnerText.Trim();
-            return string.Empty;
+            var node = doc.DocumentNode.SelectSingleNode("//div[@class='plot-full']/p");
+            return node != null ? node.InnerText.Trim() : string.Empty;
         }
 
         /// <summary>
@@ -133,13 +131,12 @@ namespace CsfdAPI
         /// <returns>Url of movie poster</returns>
         private string GetPosterUrl(HtmlDocument doc)
         {
-            var node = doc.DocumentNode.SelectNodes("//img[@class='film-poster']");
-            if (node == null)
-                // Not all movies have posters
+            var node = doc.DocumentNode.SelectSingleNode("//div[@class='film-posters']/a/img");
+            var posterUrl = node?.GetAttributeValue("src", null);
+            if (posterUrl == null) 
                 return null;
-            var posterUrl = node[0].OuterHtml;
-            posterUrl = posterUrl.Split('"')[1];
-            posterUrl = "http:" + posterUrl;
+            posterUrl = posterUrl.TrimStart('/');
+            posterUrl = $"https://{posterUrl}";
             return posterUrl;
         }
 
@@ -150,12 +147,8 @@ namespace CsfdAPI
         /// <returns>Url of movie poster</returns>
         private List<string> GetSeriesLinks(HtmlDocument doc)
         {
-            var node = doc.DocumentNode.SelectNodes("//div[@id='children']//div[@class='content']//a");
-            if (node == null)
-            {
-                return new List<string>();
-            }
-            return node.Select(n => $"https://www.csfd.cz/{n.Attributes["href"].Value}").ToList();
+            var node = doc.DocumentNode.SelectNodes("//div[@class='film-episodes-list']//a");
+            return node == null ? new List<string>() : node.Select(n => $"https://www.csfd.cz/{n.Attributes["href"].Value}").ToList();
         }
     }
 }
